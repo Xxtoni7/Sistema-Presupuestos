@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PresupuestosAPI.Data;
+using PresupuestosAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,10 @@ builder.Services.AddSwaggerGen();
 //Configurar la cadena de conexión a la base de datos
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Registrar el servicio de la empresa
+builder.Services.AddScoped<CompanyService>();
+
 
 var app = builder.Build();
 

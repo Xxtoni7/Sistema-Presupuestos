@@ -13,6 +13,6 @@ namespace PresupuestosAPI.Models
 
         [Required]
         public string Password { get; set; }
-        public List<Company> Companies { get; set; }
+        public List<Company>? Companies { get; set; }
     }
 }

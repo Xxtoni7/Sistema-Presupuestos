@@ -13,9 +13,9 @@ namespace PresupuestosAPI.Models
         public string? LogoUrl { get; set; }
         public string? ColorMain { get; set; }
         public string? ColorSecondary { get; set; }
-        public List<Presupuesto> Presupuestos { get; set; }
+        public List<Presupuesto>? Presupuestos { get; set; }
         public int IdUser { get; set; }
         [ForeignKey(nameof(IdUser))]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

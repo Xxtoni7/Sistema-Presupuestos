@@ -15,7 +15,7 @@ namespace PresupuestosAPI.Models
         public int IdPresupuesto { get; set; }
 
         [ForeignKey(nameof(IdPresupuesto))]
-        public Presupuesto Presupuesto { get; set; }
+        public Presupuesto? Presupuesto { get; set; }
 
     }
 }

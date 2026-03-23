@@ -14,10 +14,10 @@ namespace PresupuestosAPI.Models
         public string? ClientNumber { get; set; }
         public DateTime FechaPresupuesto { get; set; }
         public DateTime? FechaVencimiento { get; set; }
-        public List<PresupuestoSeccion> Secciones { get; set; }
+        public List<PresupuestoSeccion>? Secciones { get; set; }
         public int IdCompany { get; set; }
 
         [ForeignKey(nameof(IdCompany))]
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
     }
 }
