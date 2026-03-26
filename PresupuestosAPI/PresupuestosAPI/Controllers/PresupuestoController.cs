@@ -65,12 +65,12 @@ namespace PresupuestosAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePresupuesto(int id, [FromBody] Presupuesto presupuesto)
         {
-            var updatePresupuesto = await _presupuestoService.UpdatePresupuestoAsync(id, presupuesto);
-            if (updatePresupuesto == null)
+            var updatedPresupuesto = await _presupuestoService.UpdatePresupuestoAsync(id, presupuesto);
+            if (updatedPresupuesto == null)
             {
                 return NotFound();
             }
-            return Ok(updatePresupuesto);
+            return Ok(updatedPresupuesto);
         }
 
         [HttpDelete("{id}")]
