@@ -35,6 +35,10 @@ namespace PresupuestosAPI.Migrations
                     LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ColorMain = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ColorSecondary = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Industry = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdUser = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -55,10 +59,16 @@ namespace PresupuestosAPI.Migrations
                     IdPresupuesto = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BudgetNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClientNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaPresupuesto = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WorkAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EstimatedTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentTerms = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Observations = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IdCompany = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -69,6 +79,30 @@ namespace PresupuestosAPI.Migrations
                         column: x => x.IdCompany,
                         principalTable: "Companies",
                         principalColumn: "IdCompany",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PresupuestoItems",
+                columns: table => new
+                {
+                    IdItem = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Materials = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Labor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IdPresupuesto = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PresupuestoItems", x => x.IdItem);
+                    table.ForeignKey(
+                        name: "FK_PresupuestoItems_Presupuestos_IdPresupuesto",
+                        column: x => x.IdPresupuesto,
+                        principalTable: "Presupuestos",
+                        principalColumn: "IdPresupuesto",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -101,6 +135,11 @@ namespace PresupuestosAPI.Migrations
                 column: "IdUser");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PresupuestoItems_IdPresupuesto",
+                table: "PresupuestoItems",
+                column: "IdPresupuesto");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Presupuestos_IdCompany",
                 table: "Presupuestos",
                 column: "IdCompany");
@@ -114,6 +153,9 @@ namespace PresupuestosAPI.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "PresupuestoItems");
+
             migrationBuilder.DropTable(
                 name: "PresupuestoSecciones");
 

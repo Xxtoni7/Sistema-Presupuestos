@@ -12,7 +12,7 @@ using PresupuestosAPI.Data;
 namespace PresupuestosAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260320182827_InitialCreate")]
+    [Migration("20260330185842_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -33,20 +33,32 @@ namespace PresupuestosAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompany"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ColorMain")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ColorSecondary")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
+
+                    b.Property<string>("Industry")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogoUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdCompany");
@@ -64,10 +76,14 @@ namespace PresupuestosAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPresupuesto"));
 
+                    b.Property<string>("BudgetNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ClientName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClientNumber")
+                    b.Property<string>("EstimatedTime")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaPresupuesto")
@@ -79,8 +95,23 @@ namespace PresupuestosAPI.Migrations
                     b.Property<int>("IdCompany")
                         .HasColumnType("int");
 
+                    b.Property<string>("JobDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observations")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentTerms")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("WorkAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdPresupuesto");
@@ -88,6 +119,39 @@ namespace PresupuestosAPI.Migrations
                     b.HasIndex("IdCompany");
 
                     b.ToTable("Presupuestos");
+                });
+
+            modelBuilder.Entity("PresupuestosAPI.Models.PresupuestoItem", b =>
+                {
+                    b.Property<int>("IdItem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdItem"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdPresupuesto")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Labor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Materials")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("IdItem");
+
+                    b.HasIndex("IdPresupuesto");
+
+                    b.ToTable("PresupuestoItems");
                 });
 
             modelBuilder.Entity("PresupuestosAPI.Models.PresupuestoSeccion", b =>
@@ -164,10 +228,21 @@ namespace PresupuestosAPI.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("PresupuestosAPI.Models.PresupuestoItem", b =>
+                {
+                    b.HasOne("PresupuestosAPI.Models.Presupuesto", "Presupuesto")
+                        .WithMany("Items")
+                        .HasForeignKey("IdPresupuesto")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Presupuesto");
+                });
+
             modelBuilder.Entity("PresupuestosAPI.Models.PresupuestoSeccion", b =>
                 {
                     b.HasOne("PresupuestosAPI.Models.Presupuesto", "Presupuesto")
-                        .WithMany("Secciones")
+                        .WithMany()
                         .HasForeignKey("IdPresupuesto")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -182,7 +257,7 @@ namespace PresupuestosAPI.Migrations
 
             modelBuilder.Entity("PresupuestosAPI.Models.Presupuesto", b =>
                 {
-                    b.Navigation("Secciones");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("PresupuestosAPI.Models.User", b =>

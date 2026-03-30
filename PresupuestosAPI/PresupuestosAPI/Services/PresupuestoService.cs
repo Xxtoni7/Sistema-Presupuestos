@@ -46,7 +46,6 @@ namespace PresupuestosAPI.Services
 
             presupuesto.Title = updatePresupuesto.Title;
             presupuesto.ClientName = updatePresupuesto.ClientName;
-            presupuesto.ClientNumber = updatePresupuesto.ClientNumber;
             presupuesto.FechaPresupuesto = updatePresupuesto.FechaPresupuesto;
             presupuesto.FechaVencimiento = updatePresupuesto.FechaVencimiento;
 

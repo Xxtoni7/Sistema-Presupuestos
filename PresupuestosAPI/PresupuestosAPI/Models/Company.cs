@@ -13,6 +13,11 @@ namespace PresupuestosAPI.Models
         public string? LogoUrl { get; set; }
         public string? ColorMain { get; set; }
         public string? ColorSecondary { get; set; }
+        public string? Phone { get;set; }
+        public string? Email { get; set; }
+        public string? Address { get; set; }
+        public string? Industry { get; set; }
+
         public List<Presupuesto>? Presupuestos { get; set; }
         public int IdUser { get; set; }
         [ForeignKey(nameof(IdUser))]
