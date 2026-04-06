@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PresupuestosAPI.Models;
 using PresupuestosAPI.Services;
+using PresupuestosAPI.DTOs.Presupuesto;
 
 namespace PresupuestosAPI.Controllers
 {
@@ -59,9 +60,9 @@ namespace PresupuestosAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePresupuesto([FromBody] Presupuesto presupuesto)
+        public async Task<IActionResult> CreatePresupuesto([FromBody] CreatePresupuestoDto dto)
         {
-            var createdPresupuesto = await _presupuestoService.CreatePresupuestoAsync(presupuesto);
+            var createdPresupuesto = await _presupuestoService.CreatePresupuestoAsync(dto);
             return CreatedAtAction(
                 nameof(GetPresupuestoById),
                 new { id = createdPresupuesto.IdPresupuesto },
@@ -70,7 +71,7 @@ namespace PresupuestosAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePresupuesto(int id, [FromBody] Presupuesto presupuesto)
+        public async Task<IActionResult> UpdatePresupuesto(int id, [FromBody] UpdatePresupuestoDto dto)
         {
             var updatedPresupuesto = await _presupuestoService.UpdatePresupuestoAsync(id, presupuesto);
             if (updatedPresupuesto == null)
