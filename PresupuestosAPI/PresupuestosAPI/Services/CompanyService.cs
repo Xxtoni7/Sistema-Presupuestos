@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PresupuestosAPI.Data;
 using PresupuestosAPI.DTOs.Company;
+using PresupuestosAPI.DTOs.Presupuesto;
 using PresupuestosAPI.Models;
 
 namespace PresupuestosAPI.Services
@@ -14,29 +15,8 @@ namespace PresupuestosAPI.Services
             _context = context;
         }
 
-        public async Task<List<CompanyResponseDto>> GetAllCompaniesAsync()
+        private static CompanyResponseDto MapToCompanyResponseDto(Company company)
         {
-            var companies = await _context.Companies.ToListAsync();
-            return companies.Select(c => new CompanyResponseDto
-            {
-                IdCompany = c.IdCompany,
-                Name = c.Name,
-                LogoUrl = c.LogoUrl,
-                ColorMain = c.ColorMain,
-                ColorSecondary = c.ColorSecondary,
-                Phone = c.Phone,
-                Email = c.Email,
-                Address = c.Address,
-                Industry = c.Industry,
-                IdUser = c.IdUser,
-            }).ToList();
-        }
-
-        public async Task<CompanyResponseDto?> GetCompanyByIdAsync(int id)
-        {
-            var company =  await _context.Companies.FindAsync(id);
-            if(company == null) return null;
-
             return new CompanyResponseDto
             {
                 IdCompany = company.IdCompany,
@@ -52,25 +32,27 @@ namespace PresupuestosAPI.Services
             };
         }
 
+        public async Task<List<CompanyResponseDto>> GetAllCompaniesAsync()
+        {
+            var companies = await _context.Companies.ToListAsync();
+            return companies.Select(MapToCompanyResponseDto).ToList();
+        }
+
+        public async Task<CompanyResponseDto?> GetCompanyByIdAsync(int id)
+        {
+            var company =  await _context.Companies.FindAsync(id);
+            if(company == null) return null;
+
+            return MapToCompanyResponseDto(company);
+        }
+
         public async Task<List<CompanyResponseDto>> GetCompaniesByNameAsync(string name)
         {
             var companies = await _context.Companies
                 .Where(c => c.Name.Contains(name))
                 .ToListAsync();
 
-            return companies.Select(c => new CompanyResponseDto
-            {
-                IdCompany = c.IdCompany,
-                Name = c.Name,
-                LogoUrl = c.LogoUrl,
-                ColorMain = c.ColorMain,
-                ColorSecondary = c.ColorSecondary,
-                Phone = c.Phone,
-                Email = c.Email,
-                Address = c.Address,
-                Industry = c.Industry,
-                IdUser = c.IdUser
-            }).ToList();
+            return companies.Select(MapToCompanyResponseDto).ToList();
         }
 
         public async Task<CompanyResponseDto> CreateCompanyAsync(CreateCompanyDto dto)
@@ -90,19 +72,7 @@ namespace PresupuestosAPI.Services
 
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
-            return new CompanyResponseDto
-            {
-                IdCompany = company.IdCompany,
-                Name = company.Name,
-                LogoUrl = company.LogoUrl,
-                ColorMain = company.ColorMain,
-                ColorSecondary = company.ColorSecondary,
-                Phone = company.Phone,
-                Email = company.Email,
-                Address = company.Address,
-                Industry = company.Industry,
-                IdUser = company.IdUser
-            };
+            return MapToCompanyResponseDto(company);
         }
 
         public async Task<CompanyResponseDto?> UpdateCompanyAsync(int id, UpdateCompanyDto dto)
@@ -123,19 +93,7 @@ namespace PresupuestosAPI.Services
             company.Industry = dto.Industry;
 
             await _context.SaveChangesAsync();
-            return new CompanyResponseDto
-            {
-                IdCompany = company.IdCompany,
-                Name = company.Name,
-                LogoUrl = company.LogoUrl,
-                ColorMain = company.ColorMain,
-                ColorSecondary = company.ColorSecondary,
-                Phone = company.Phone,
-                Email = company.Email,
-                Address = company.Address,
-                Industry = company.Industry,
-                IdUser = company.IdUser
-            };
+            return MapToCompanyResponseDto(company);
         }
 
         public async Task<bool> DeleteCompanyAsync(int id)
