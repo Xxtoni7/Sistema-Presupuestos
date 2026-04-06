@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PresupuestosAPI.Models;
 using PresupuestosAPI.Services;
+using PresupuestosAPI.DTOs.Company;
 
 namespace PresupuestosAPI.Controllers
 {
@@ -37,19 +38,19 @@ namespace PresupuestosAPI.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> GetCompanyByName([FromQuery] string Name)
         {
-            var company = await _companyService.GetCompaniesByNameAsync(Name);
-            if (!company.Any())
+            var companies = await _companyService.GetCompaniesByNameAsync(Name);
+            if (!companies.Any())
             {
                 return NotFound();
             }
 
-            return Ok(company);
+            return Ok(companies);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCompany([FromBody] Company company)
+        public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyDto dto)
         {
-            var createdCompany = await _companyService.CreateCompanyAsync(company);
+            var createdCompany = await _companyService.CreateCompanyAsync(dto);
             return CreatedAtAction(
                 nameof(GetCompanyById),
                 new { Id = createdCompany.IdCompany },
@@ -58,9 +59,9 @@ namespace PresupuestosAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCompany(int id, [FromBody] Company company)
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] UpdateCompanyDto dto)
         {
-            var updatedCompany = await _companyService.UpdateCompanyAsync(id, company);
+            var updatedCompany = await _companyService.UpdateCompanyAsync(id, dto);
             if (updatedCompany == null)
             {
                 return NotFound();
@@ -79,7 +80,5 @@ namespace PresupuestosAPI.Controllers
             }
             return NoContent();
         }
-
-
     }
 }

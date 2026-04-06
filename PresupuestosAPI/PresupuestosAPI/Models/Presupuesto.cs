@@ -10,7 +10,7 @@ namespace PresupuestosAPI.Models
         public int IdPresupuesto { get; set; }
         [Required]
         public string Title { get; set; }
-        public string BudgetNumber { get; set; }
+        public string? BudgetNumber { get; set; }
         public string? ClientName { get; set; }
         public DateTime FechaPresupuesto { get; set; }
         public DateTime? FechaVencimiento { get; set; }
