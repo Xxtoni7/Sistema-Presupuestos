@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwrot\uploads\companies\logos\" />
+    <Folder Include="wwwroot\uploads\companies\logos\" />
   </ItemGroup>
 
 </Project>
