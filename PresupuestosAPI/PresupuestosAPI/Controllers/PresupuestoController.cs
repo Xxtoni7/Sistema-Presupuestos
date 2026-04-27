@@ -26,11 +26,6 @@ namespace PresupuestosAPI.Controllers
         public async Task<IActionResult> GetPresupuestosByCompanyId(int companyId)
         {
             var presupuestos = await _presupuestoService.GetPresupuestosByCompanyIdAsync(companyId);
-            if (!presupuestos.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(presupuestos);
         }
 

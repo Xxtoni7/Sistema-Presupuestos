@@ -44,6 +44,7 @@ namespace PresupuestosAPI.Services
         {
             var presupuestos = await _context.Presupuestos
                 .Where(p => p.IdCompany == companyId)
+                .OrderByDescending(p => p.FechaPresupuesto)
                 .ToListAsync();
 
             return presupuestos.Select(MapToPresupuestoResponseDto).ToList();

@@ -36,7 +36,9 @@ namespace PresupuestosAPI.Services
 
         public async Task<List<CompanyResponseDto>> GetAllCompaniesAsync()
         {
-            var companies = await _context.Companies.ToListAsync();
+            var companies = await _context.Companies
+                .OrderByDescending(c => c.IdCompany)
+                .ToListAsync();
             return companies.Select(MapToCompanyResponseDto).ToList();
         }
 
@@ -52,6 +54,7 @@ namespace PresupuestosAPI.Services
         {
             var companies = await _context.Companies
                 .Where(c => c.Name.Contains(name))
+                .OrderByDescending(c => c.IdCompany)
                 .ToListAsync();
 
             return companies.Select(MapToCompanyResponseDto).ToList();
