@@ -26,15 +26,8 @@ namespace PresupuestosAPI.Services
                 throw new Exception("Formato no permitido. Solo se aceptan .jpg, .jpeg, .png y .webp");
             }
 
-            var webRootPath = _environment.WebRootPath;
-
-            if (string.IsNullOrWhiteSpace(webRootPath))
-            {
-                webRootPath = Path.Combine(_environment.ContentRootPath, "wwwroot");
-            }
-
             var uploadsFolder = Path.Combine(
-                webRootPath,
+                _environment.ContentRootPath,
                 "uploads",
                 "companies",
                 "logos"
