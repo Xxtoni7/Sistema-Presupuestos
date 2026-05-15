@@ -13,6 +13,5 @@ namespace PresupuestosAPI.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<Presupuesto> Presupuestos { get; set; }
         public DbSet<PresupuestoItem> PresupuestoItems { get; set; }
-        public DbSet<PresupuestoSeccion> PresupuestoSecciones { get; set; }
     }
 }

@@ -2,19 +2,18 @@
 using PresupuestosAPI.Data;
 using PresupuestosAPI.DTOs.Company;
 using PresupuestosAPI.Models;
-using Microsoft.AspNetCore.Hosting;
 
 namespace PresupuestosAPI.Services
 {
     public class CompanyService
     {
         private readonly AppDbContext _context;
-        private readonly IWebHostEnvironment _environment;
+        private readonly CloudinaryService _cloudinaryService;
 
-        public CompanyService(AppDbContext context, IWebHostEnvironment environment)
+        public CompanyService(AppDbContext context, CloudinaryService cloudinaryService)
         {
             _context = context;
-            _environment = environment;
+            _cloudinaryService = cloudinaryService;
         }
 
         private static CompanyResponseDto MapToCompanyResponseDto(Company company)
@@ -39,13 +38,18 @@ namespace PresupuestosAPI.Services
             var companies = await _context.Companies
                 .OrderByDescending(c => c.IdCompany)
                 .ToListAsync();
+
             return companies.Select(MapToCompanyResponseDto).ToList();
         }
 
         public async Task<CompanyResponseDto?> GetCompanyByIdAsync(int id)
         {
-            var company =  await _context.Companies.FindAsync(id);
-            if(company == null) return null;
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return null;
+            }
 
             return MapToCompanyResponseDto(company);
         }
@@ -77,12 +81,14 @@ namespace PresupuestosAPI.Services
 
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
+
             return MapToCompanyResponseDto(company);
         }
 
         public async Task<CompanyResponseDto?> UpdateCompanyAsync(int id, UpdateCompanyDto dto)
         {
             var company = await _context.Companies.FindAsync(id);
+
             if (company == null)
             {
                 return null;
@@ -98,37 +104,29 @@ namespace PresupuestosAPI.Services
             company.Industry = dto.Industry;
 
             await _context.SaveChangesAsync();
+
             return MapToCompanyResponseDto(company);
         }
 
         public async Task<bool> DeleteCompanyAsync(int id)
         {
             var company = await _context.Companies.FindAsync(id);
+
             if (company == null)
             {
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(company.LogoUrl))
-            {
-                var webRootPath = _environment.WebRootPath;
-
-                if (string.IsNullOrWhiteSpace(webRootPath))
-                {
-                    webRootPath = Path.Combine(_environment.ContentRootPath, "wwwroot");
-                }
-
-                var relativePath = company.LogoUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-                var logoPath = Path.Combine(webRootPath, relativePath);
-
-                if (File.Exists(logoPath))
-                {
-                    File.Delete(logoPath);
-                }
-            }
+            var logoUrl = company.LogoUrl;
 
             _context.Companies.Remove(company);
             await _context.SaveChangesAsync();
+
+            if (!string.IsNullOrWhiteSpace(logoUrl))
+            {
+                await _cloudinaryService.DeleteImageAsync(logoUrl);
+            }
+
             return true;
         }
     }

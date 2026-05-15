@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PresupuestosAPI.Data;
-using Microsoft.Extensions.FileProviders;
 using PresupuestosAPI.Services;
+using PresupuestosAPI.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
 
 //Configurar la cadena de conexión a la base de datos
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -19,6 +22,7 @@ builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<PresupuestoService>();
 builder.Services.AddScoped<PresupuestoItemService>();
 builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<CloudinaryService>();
 
 builder.Services.AddCors(options =>
 {
@@ -45,25 +49,6 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
 app.UseStaticFiles();
-
-var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads");
-
-if (!Directory.Exists(uploadsPath))
-{
-    Directory.CreateDirectory(uploadsPath);
-}
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(uploadsPath),
-    RequestPath = "/uploads",
-    OnPrepareResponse = ctx =>
-    {
-        ctx.Context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-        ctx.Context.Response.Headers["Access-Control-Allow-Methods"] = "GET, OPTIONS";
-        ctx.Context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type";
-    }
-});
 
 app.UseAuthorization();
 
